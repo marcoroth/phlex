@@ -10,10 +10,7 @@ jobs:
       matrix:
         os: ['ubuntu-latest', 'macos-latest']
         ruby-version: ['2.7', '3.0', '3.1', 'head']
-        gem: ['phlex', 'phlex-rails']
     runs-on: ${{ matrix.os }}
-    defaults:
-      working-directory: ${{ matrix.gem }}
     steps:
       - uses: actions/checkout@v3
 
@@ -23,14 +20,17 @@ jobs:
           ruby-version: ${{ matrix.ruby-version }}
           bundler-cache: true
 
-      - name: Tests
-        run: bundle exec sus
+      - name: phlex tests
+        run: (cd phlex && bundle exec sus)
 
-      - name: Type check
-        run: bundle exec solargraph typecheck --level typed
+      - name: phlex type check
+        run: (cd phlex && bundle exec solargraph typecheck --level typed)
 
-      - name: Rubocop
-        run: bundle exec rubocop
+      - name: phlex rubocop
+        run: (cd phlex && bundle exec rubocop)
+
+      - name: phlex-rails tests
+        run: (cd phlex-rails && bundle exec sus)
 
   docs:
     runs-on: ubuntu-latest
