@@ -13,3 +13,4 @@
 Gemfile.lock
 .rubocop-*
 .covered.db
+.DS_Store
