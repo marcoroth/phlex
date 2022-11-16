@@ -1,36 +1,41 @@
 name: CI
 on:
   push:
-    branches: ['main']
+    # branches: ['main']
   pull_request:
-    branches: ['main']
+    # branches: ['main']
 jobs:
   specs:
     strategy:
       matrix:
         os: ['ubuntu-latest', 'macos-latest']
         ruby-version: ['2.7', '3.0', '3.1', 'head']
+        gems: ['phlex', 'phlex-rails']
+
     runs-on: ${{ matrix.os }}
+
+    defaults:
+      run:
+        working-directory: ./${{ matrix.gems }}
+
     steps:
       - uses: actions/checkout@v3
 
-      - name: Setup
+      - name: Setup ${{ matrix.gems }}
         uses: ruby/setup-ruby@v1
         with:
+          working-directory: ./${{ matrix.gems }}
           ruby-version: ${{ matrix.ruby-version }}
           bundler-cache: true
 
-      - name: phlex tests
-        run: (cd phlex && bundle exec sus)
+      - name: ${{ matrix.gems }} tests
+        run: bundle exec sus
 
-      - name: phlex type check
-        run: (cd phlex && bundle exec solargraph typecheck --level typed)
+      - name: ${{ matrix.gems }} type check
+        run: bundle exec solargraph typecheck --level typed
 
-      - name: phlex rubocop
-        run: (cd phlex && bundle exec rubocop)
-
-      - name: phlex-rails tests
-        run: (cd phlex-rails && bundle exec sus)
+      - name: ${{ matrix.gems }} rubocop
+        run: bundle exec rubocop
 
   docs:
     runs-on: ubuntu-latest
