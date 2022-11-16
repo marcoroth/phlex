@@ -1,9 +1,9 @@
 name: CI
 on:
   push:
-    branches: ['main']
+    # branches: ['main']
   pull_request:
-    branches: ['main']
+    # branches: ['main']
 jobs:
   specs:
     strategy:
@@ -14,23 +14,34 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Setup
+      - name: Setup phlex
+        uses: ruby/setup-ruby@v1
+        with:
+          working-directory: ./phlex
+          ruby-version: ${{ matrix.ruby-version }}
+          bundler-cache: true
+
+      - name: Setup phlex-rails
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby-version }}
           bundler-cache: true
+          working-directory: ./phlex-rails
 
       - name: phlex tests
-        run: (cd phlex && bundle exec sus)
+        run: bundle exec sus
+        working-directory: ./phlex
 
       - name: phlex type check
-        run: (cd phlex && bundle exec solargraph typecheck --level typed)
+        run: bundle exec solargraph typecheck --level typed
+        working-directory: ./phlex
 
       - name: phlex rubocop
-        run: (cd phlex && bundle exec rubocop)
+        run: bundle exec rubocop
 
       - name: phlex-rails tests
-        run: (cd phlex-rails && bundle exec sus)
+        working-directory: ./phlex-rails
+        run: bundle exec sus
 
   docs:
     runs-on: ubuntu-latest
