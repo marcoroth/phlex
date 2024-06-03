@@ -21,6 +21,7 @@ module Phlex
 	autoload :SGML, "phlex/sgml"
 	autoload :SVG, "phlex/svg"
 	autoload :Unbuffered, "phlex/unbuffered"
+	autoload :Inline, "phlex/inline"
 
 	Escape = ERB::Escape
 	ATTRIBUTE_CACHE = FIFO.new(4_000_000) # 4MB
